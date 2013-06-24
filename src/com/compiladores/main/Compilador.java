@@ -1,6 +1,7 @@
 package com.compiladores.main;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.logging.Level;
 
 import com.compiladores.analisadores.AnalisadorLexico;
@@ -34,7 +35,16 @@ public class Compilador {
 	
 	private static void realizaAnalises(BufferedReader reader){
 		
-		AnalisadorLexico analisadorLexico = new AnalisadorLexico(reader);
+		try {
+			AnalisadorLexico analisadorLexico = new AnalisadorLexico(reader);
+			CompiladorUtils.LOGGER.log(Level.INFO,""+analisadorLexico.scan().getTag());
+			
+			
+			
+		} catch (IOException e) {
+			CompiladorUtils.LOGGER.log(Level.SEVERE,"Erro de I/O");			
+			System.exit(0);
+		}
 		
 	}
 	

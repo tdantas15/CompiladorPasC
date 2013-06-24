@@ -13,10 +13,4 @@ public class Token {
 		return tag;
 	}
 	
-	//Retorna a tag como String
-	public String toString(){
-		return "" +tag;
-		
-	}
-	
 }
