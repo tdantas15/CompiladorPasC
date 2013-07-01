@@ -38,7 +38,7 @@ public class AnalisadorLexico {
 		}
 		
 		//Verifica se linguagem contém o símbolo
-		if (((int) ch) >= 255 && ch!='“'){
+		if (((int) ch) >= 255 && ch!='“' && ch!='”'){
 			CompiladorUtils.LOGGER.log(Level.SEVERE,"Erro na linha "+linha+": Caractere invalido!");
 			readch();
 		}	
@@ -225,7 +225,7 @@ public class AnalisadorLexico {
 				if (verificaProximo('i')) {
 					if (verificaProximo('n')) {
 						if (!verificaNumLetra(ch))
-							return new Palavra(Tag.BEGIN, "begin");
+							return insereNaTabelaDeSimbolos(new Palavra(Tag.BEGIN, "begin"));
 						else
 							return verificaIdentificador("begin");
 					} else
@@ -247,14 +247,14 @@ public class AnalisadorLexico {
 				if (verificaProximo('l')) {
 					
 					if (!verificaNumLetra(ch))
-						return new Palavra(Tag.READ, "real");
+						return insereNaTabelaDeSimbolos(new Palavra(Tag.REAL, "real"));
 					else
 						return verificaIdentificador("real");				
 				}
 				else if (ch=='d') {
 					readch();
 					if (!verificaNumLetra(ch))
-						return new Palavra(Tag.READ, "read");
+						return insereNaTabelaDeSimbolos(new Palavra(Tag.READ, "read"));
 					else
 						return verificaIdentificador("read");
 				} else
@@ -273,7 +273,7 @@ public class AnalisadorLexico {
 			if (verificaProximo('n')) {
 				if (verificaProximo('d')) {
 					if (!verificaNumLetra(ch))
-						return new Palavra(Tag.END, "end");
+						return insereNaTabelaDeSimbolos(new Palavra(Tag.END, "end"));
 					else
 						return verificaIdentificador("end");
 				} else
@@ -283,7 +283,7 @@ public class AnalisadorLexico {
 					if (verificaProximo('s')){
 						if (verificaProximo('e')){
 							if (!verificaNumLetra(ch))
-								return new Palavra(Tag.ELSE, "else");
+								return insereNaTabelaDeSimbolos(new Palavra(Tag.ELSE, "else"));
 							else
 								return verificaIdentificador("else");
 							
@@ -304,7 +304,7 @@ public class AnalisadorLexico {
 				if (verificaProximo('t')) {
 					if (verificaProximo('e')) {
 						if (!verificaNumLetra(ch))
-							return new Palavra(Tag.WRITE, "write");
+							return insereNaTabelaDeSimbolos(new Palavra(Tag.WRITE, "write"));
 						else
 							return verificaIdentificador("write");
 					} else
@@ -327,7 +327,7 @@ public class AnalisadorLexico {
 		if (verificaProximo('f')) {
 			readch();
 			if (!verificaNumLetra(ch))
-				return new Palavra(Tag.IF, "if");
+				return insereNaTabelaDeSimbolos(new Palavra(Tag.IF, "if"));
 			else
 				return verificaIdentificador("if");
 		}
@@ -338,7 +338,7 @@ public class AnalisadorLexico {
 			if (verificaProximo('t')) {
 				readch();
 				if (!verificaNumLetra(ch))
-					return new Palavra(Tag.INT, "int");
+					return insereNaTabelaDeSimbolos(new Palavra(Tag.INT, "int"));
 				else
 					return verificaIdentificador("int");
 			}
@@ -346,7 +346,7 @@ public class AnalisadorLexico {
 			if (ch == 'i' && verificaProximo('t')) {
 				readch();
 				if (!verificaNumLetra(ch))
-					return new Palavra(Tag.INIT, "init");
+					return insereNaTabelaDeSimbolos(new Palavra(Tag.INIT, "init"));
 				else
 					return verificaIdentificador("init");
 			}
@@ -374,11 +374,8 @@ public class AnalisadorLexico {
 			readch();
 
 		}
-		Palavra t =new Palavra(Tag.ID, identificador);
-		if (!CompiladorUtils.tabelaDeSimbolos.containsKey(t.getLexema())){ 
-			CompiladorUtils.tabelaDeSimbolos.put(t.getLexema(), t);
-		}
-		return new Palavra(Tag.REGISTRO_SIMBOLOS, t.getLexema());
+		return insereNaTabelaDeSimbolos(new Palavra(Tag.ID, identificador));
+		
 
 	}
 	
@@ -423,11 +420,8 @@ public class AnalisadorLexico {
 			readch();
 		}
 
-		Palavra t =new Palavra(Tag.ID, identificador);
-		if (!CompiladorUtils.tabelaDeSimbolos.containsKey(t.getLexema())){ 
-			CompiladorUtils.tabelaDeSimbolos.put(t.getLexema(), t);
-		}
-		return new Palavra(Tag.REGISTRO_SIMBOLOS, t.getLexema());
+		return insereNaTabelaDeSimbolos(new Palavra(Tag.ID, identificador));
+		
 
 	}
 
@@ -450,6 +444,15 @@ public class AnalisadorLexico {
 			return false;
 		ch = ' ';
 		return true;
+	}
+	
+	//Insere na tabela de símbolos
+	private Token insereNaTabelaDeSimbolos(Palavra t){
+		
+		if (!CompiladorUtils.tabelaDeSimbolos.containsKey(t.getLexema())){ 
+			CompiladorUtils.tabelaDeSimbolos.put(t.getLexema(), t);
+		}
+		return new Palavra(Tag.REGISTRO_SIMBOLOS, t.getLexema());
 	}
 
 }

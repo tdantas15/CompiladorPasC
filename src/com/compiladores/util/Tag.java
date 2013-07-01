@@ -22,6 +22,7 @@ public class Tag {
 	LITERAL = 80,
 	COMMENT = 86,
 	DIFF = 87,
+	REAL = 91,
 	
 	PONTO = 82,
 	END = 83,
