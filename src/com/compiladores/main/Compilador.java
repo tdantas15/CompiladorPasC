@@ -2,7 +2,10 @@ package com.compiladores.main;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.logging.Level;
+
+
 
 import com.compiladores.analisadores.AnalisadorLexico;
 import com.compiladores.util.LeitorDeArquivos;
@@ -40,37 +43,57 @@ public class Compilador {
 
 	private static void realizaAnalises(BufferedReader reader) {
 
+		
 		try {
-			AnalisadorLexico analisadorLexico = new AnalisadorLexico(reader);
 			
-			for (int i = 0; i < 42; i++) {
-				
-				Token t = analisadorLexico.scan();
-				
-				if (!(t.getTag() == Tag.NUM)){
+			AnalisadorLexico analisadorLexico = new AnalisadorLexico(reader);
 
-					CompiladorUtils.LOGGER.log(
-							Level.INFO,
-							"\nReconhecido! Tag:" +((Palavra) t)
-							.getTag()+"- Lexema:"
-									+ ((Palavra) t)
-											.getLexema());
-				}
-				else{
-
-					CompiladorUtils.LOGGER.log(
-							Level.INFO,
-							"\nReconhecido! Número:"
-									+ ((Numero)t)
-											.getNumero());
-				}
+			Token t = analisadorLexico.scan();
+			while (t!=null) {
+		
+				imprimeToken(t);
+				t = analisadorLexico.scan();
+				
 			}
-
+			imprimeTabelaSimbolos();
 		} catch (IOException e) {
 			CompiladorUtils.LOGGER.log(Level.SEVERE, "Erro de I/O");
 			System.exit(0);
 		}
 
+	}
+	
+	
+	private static void imprimeToken(Token token) {
+		if (!(token.getTag() == Tag.NUM)){
+
+			System.out.println(
+					((Palavra) token)
+					.getTag()+"\t"
+							+ ((Palavra) token)
+									.getLexema());
+		}
+		else{
+
+			System.out.println(
+					token.getTag()+"\t"
+							+ ((Numero)token)
+									.getNumero());
+		}
+		
+		
+	}
+	
+	
+	private static void imprimeTabelaSimbolos() {
+		System.out.println("\nTabela de Símbolos:\n");
+		Iterator iterator = CompiladorUtils.tabelaDeSimbolos.keySet().iterator();
+		
+		for (int i=0;i<CompiladorUtils.tabelaDeSimbolos.keySet().size();i++){
+			imprimeToken(CompiladorUtils.tabelaDeSimbolos.get(iterator.next()));
+		}
+		
+		
 	}
 
 }

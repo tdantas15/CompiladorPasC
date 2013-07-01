@@ -1,0 +1,16 @@
+init
+	//Este e um programa com if
+	int j, k;
+begin
+	read j;
+	read k;
+	if (k <> 0) begin
+		result := j/k;
+	end
+	else begin
+		result := 0;
+	end;
+	write “Este é o resultado: ”
+	WRITE result;
+	Write “Fim do programa””
+end.

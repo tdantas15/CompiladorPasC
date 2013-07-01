@@ -2,14 +2,14 @@ package com.compiladores.util;
 
 public class Numero extends Token {
 
-	private final int numero;
+	private final float numero;
 	
-	public Numero (int tag,int numero){
+	public Numero (int tag,float numero){
 		super(tag);
 		this.numero = numero;
 	}
 	
-	public int getNumero(){
+	public float getNumero(){
 		return numero;
 	}
 	

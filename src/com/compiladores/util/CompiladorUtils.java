@@ -1,5 +1,6 @@
 package com.compiladores.util;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.logging.Logger;
 
@@ -10,6 +11,6 @@ public class CompiladorUtils {
 	public final static Logger LOGGER = Logger.getLogger(CompiladorUtils.class .getName());
 	
 	//Tabela de símbolos
-	public static Hashtable<String, String>tabelaDeSimbolos = new Hashtable<String,String>();
+	public static HashMap<String,Token> tabelaDeSimbolos = new HashMap<String,Token>();
 	
 }

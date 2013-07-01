@@ -27,22 +27,37 @@ public class AnalisadorLexico {
 	// Método responsável por retornar o próximo Token
 	public Token scan() throws IOException {
 		
-		Token bacon;
-
-		bacon = verificaLimitadores();
-		if (bacon != null)
-			return bacon;
-		
-		if (ch=='"')
-			return verificaLiteral();
+		Token token;
 		
 		// Desconsidera delimitadores
 		desconsideraDelimitadores();
 
-		CompiladorUtils.LOGGER.log(Level.INFO,"Desconsiderados!");
-		bacon = verificaLimitadores();
-		if (bacon != null)
-			return bacon;
+		//Verifica se o arquivo terminou
+		if (((int)ch)==65535){
+			return null;
+		}
+		
+		//Verifica se linguagem contém o símbolo
+		if (((int) ch) >= 255 && ch!='“'){
+			CompiladorUtils.LOGGER.log(Level.SEVERE,"Erro na linha "+linha+": Caractere invalido!");
+			readch();
+		}	
+		
+		token = verificaLimitadores();
+		if (token != null)
+			return token;
+
+		if (ch=='“'){
+			return verificaLiteral();
+		}
+		
+		if (ch=='{'){
+			return verificaComentário();
+		}
+
+		token = verificaLimitadores();
+		if (token != null)
+			return token;
 
 		if (ch == 'i')
 			return verificaIniciandoComI();
@@ -55,18 +70,21 @@ public class AnalisadorLexico {
 		
 		else if (ch == 'w')
 			return verificaIniciandoComW();
-		else if (ch=='\"')
+		else if (ch == 'e')
+			return verificaIniciandoComE();
+		
+		else if (ch=='“')
 			return verificaLiteral();
 		
-		
-		
+	
 		if (Character.isDigit(ch)) {
 			return verificaNumero();
 		}
 
-		bacon = verificaIdentificador();
-		if (bacon != null)
-			return bacon;
+		
+		token = verificaIdentificador();
+		if (token != null)
+			return token;
 
 		return null;
 
@@ -91,13 +109,25 @@ public class AnalisadorLexico {
 	private Token verificaNumero() throws IOException {
 		
 		int num = Integer.parseInt(ch+"");
+		float decimais=0;
 		readch();
 		while (Character.isDigit(ch)) {
 			num *= 10;
 			num += Integer.parseInt(ch+"");
 			readch();
 		}
-		return new Numero(Tag.NUM, num);
+		if (ch=='.'){
+			int i=1;
+			readch();
+			while (Character.isDigit(ch)) {
+				int atual = Integer.parseInt(ch+"");
+				decimais+=atual*Math.pow(0.1,i);
+				readch();
+				i++;
+			}
+			
+		}
+		return new Numero(Tag.NUM, num+decimais);
 
 	}
 
@@ -110,6 +140,47 @@ public class AnalisadorLexico {
 		if (ch == ';') {
 			readch();
 			return new Palavra(Tag.PONTO_E_VIRGULA, ";");
+		}
+		if (ch == '=') {
+			readch();
+			return new Palavra(Tag.EQ, "=");
+		}
+		if (ch == '>') {
+			if (verificaProximo('=')){
+				readch();
+				return new Palavra(Tag.GE,">=");
+			}	
+			return new Palavra(Tag.GT, ">");
+		}
+		if (ch == '<') {
+			if (verificaProximo('=')){
+				readch();
+				return new Palavra(Tag.LE,"<=");
+			}	
+			if (ch=='>'){
+				readch();
+				return new Palavra(Tag.DIFF, "<>");
+			}
+			return new Palavra(Tag.LT, "<");
+		}
+		
+		if (ch == '&'){
+			if (verificaProximo('&')){
+				readch();
+				return new Palavra(Tag.AND,"&&");
+			}
+		}
+
+		if (ch == '|'){
+			if (verificaProximo('|')){
+				readch();
+				return new Palavra(Tag.OR,"||");
+			}
+		}
+		
+		if (ch == '.') {
+			readch();
+			return new Palavra(Tag.PONTO, ".");
 		}
 		if (ch == '(') {
 			readch();
@@ -126,6 +197,14 @@ public class AnalisadorLexico {
 		if (ch == '/') {
 			readch();
 			return new Palavra(Tag.DIVISAO, "/");
+		}
+		if (ch == '+') {
+			readch();
+			return new Palavra(Tag.MAIS, "+");
+		}
+		if (ch == '-') {
+			readch();
+			return new Palavra(Tag.MENOS, "-");
 		}
 		if (ch == ':') {
 			if (verificaProximo('=')) {
@@ -165,7 +244,15 @@ public class AnalisadorLexico {
 
 		if (verificaProximo('e')) {
 			if (verificaProximo('a')) {
-				if (verificaProximo('d')) {
+				if (verificaProximo('l')) {
+					
+					if (!verificaNumLetra(ch))
+						return new Palavra(Tag.READ, "real");
+					else
+						return verificaIdentificador("real");				
+				}
+				else if (ch=='d') {
+					readch();
 					if (!verificaNumLetra(ch))
 						return new Palavra(Tag.READ, "read");
 					else
@@ -176,6 +263,36 @@ public class AnalisadorLexico {
 				return verificaIdentificador("re");
 		} else
 			return verificaIdentificador("r");
+
+	}
+	
+	// Verifica token iniciando com a letra e (read)
+	private Token verificaIniciandoComE() throws IOException {
+
+		
+			if (verificaProximo('n')) {
+				if (verificaProximo('d')) {
+					if (!verificaNumLetra(ch))
+						return new Palavra(Tag.END, "end");
+					else
+						return verificaIdentificador("end");
+				} else
+					return verificaIdentificador("en");
+			} else{
+				if (ch=='l'){
+					if (verificaProximo('s')){
+						if (verificaProximo('e')){
+							if (!verificaNumLetra(ch))
+								return new Palavra(Tag.ELSE, "else");
+							else
+								return verificaIdentificador("else");
+							
+						}return verificaIdentificador("els");
+						
+					}return verificaIdentificador("el");
+				}
+				return verificaIdentificador("e");
+			}
 
 	}
 	
@@ -235,8 +352,7 @@ public class AnalisadorLexico {
 			}
 		}
 
-		CompiladorUtils.LOGGER.log(Level.INFO, "Não Reconhecido");
-		return null;
+		return verificaIdentificador("i");
 	}
 
 	// Verifica se é Identificador
@@ -245,30 +361,56 @@ public class AnalisadorLexico {
 		String identificador = "";
 		if (Character.isLetter(ch))
 			identificador += ch;
+		else{
+			CompiladorUtils.LOGGER.log(Level.SEVERE,"Erro na linha "+linha+": Caractere invalido!");
+			readch();
+			return this.scan();
+		}
+			
+			
 		readch();
 		while ((verificaNumLetra(ch))) {
 			identificador += ch;
 			readch();
 
 		}
-
-		return new Palavra(Tag.ID, identificador);
+		Palavra t =new Palavra(Tag.ID, identificador);
+		if (!CompiladorUtils.tabelaDeSimbolos.containsKey(t.getLexema())){ 
+			CompiladorUtils.tabelaDeSimbolos.put(t.getLexema(), t);
+		}
+		return new Palavra(Tag.REGISTRO_SIMBOLOS, t.getLexema());
 
 	}
 	
 	//Reconhece Literal
 	private Token verificaLiteral() throws IOException {
-
+		readch();
 		String literal="";
-		while (ch!='\"') {
+		while (ch!='”') {
 			if (((int) ch) <= 255 && ch!='\n'){
 				literal += ch;
 				readch();
 			}else break;
-
 		}
 		readch();
 		return new Palavra(Tag.LITERAL, literal);
+
+	}
+	
+	//Verifica comentário
+	private Token verificaComentário() throws IOException {
+		readch();
+		
+		while (ch!='}') {
+			if (((int) ch) != 65535){
+				readch();
+			}else{
+				CompiladorUtils.LOGGER.log(Level.SEVERE,"Erro na linha "+linha+": Comentário não foi finalizado");
+				System.exit(0);
+			}
+		}
+		readch();
+		return new Palavra(Tag.COMMENT, "");
 
 	}
 
@@ -281,7 +423,11 @@ public class AnalisadorLexico {
 			readch();
 		}
 
-		return new Palavra(Tag.ID, identificador);
+		Palavra t =new Palavra(Tag.ID, identificador);
+		if (!CompiladorUtils.tabelaDeSimbolos.containsKey(t.getLexema())){ 
+			CompiladorUtils.tabelaDeSimbolos.put(t.getLexema(), t);
+		}
+		return new Palavra(Tag.REGISTRO_SIMBOLOS, t.getLexema());
 
 	}
 
@@ -293,7 +439,8 @@ public class AnalisadorLexico {
 	// Lê o próximo caractere
 	private void readch() throws IOException {
 		ch = (char) reader.read();
-		CompiladorUtils.LOGGER.log(Level.INFO,"Próximo:"+ch);
+		
+		
 	}
 
 	// Verifica o próximo caractere
