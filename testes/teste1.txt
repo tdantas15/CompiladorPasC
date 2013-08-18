@@ -1,12 +1,11 @@
-init 
-	int a, b, c; 
-	int result; 
-begin 
-	read (a); 
-	read (b); 
-	b := 10; 
-	result := (a * c)/(b * 5) ; 
-	write “Resultado: ”; 
-	write (result); 
-end. 
-
+init
+int a, b;
+int result;
+begin
+read (a);
+read (b);
+c := 10;
+result := (a * c)/(b * 5) ;
+write (“Resultado: ”);
+write (result);
+end.

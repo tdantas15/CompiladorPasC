@@ -1,12 +1,13 @@
-	integer a;
-	real b, c
+init
+int a;
+real b, c;
 begin
-	read (a);
-	b := a * a;
-	c := b + a/2 @ (35x/b);
-	write (c);
-	val := 34.2
-	val := val + 2.2;
-	write (val);
-	val := 35. + .2;
-end
+read (a);
+b := a * a;
+c := b + a/2 * (35*x/b);
+write (c);
+val := 34.2;
+val := val + 2.2;
+write (val);
+val := 35.0 + 0.2;
+end.

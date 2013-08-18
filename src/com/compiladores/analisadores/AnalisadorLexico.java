@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 import com.compiladores.util.CompiladorUtils;
+import com.compiladores.util.EntradaTabelaSimbolos;
 import com.compiladores.util.Numero;
 import com.compiladores.util.Palavra;
 import com.compiladores.util.Tag;
@@ -59,6 +60,9 @@ public class AnalisadorLexico {
 		if (token != null)
 			return token;
 
+		
+		if (ch == 'd')
+			return verificaIniciandoComD();
 		if (ch == 'i')
 			return verificaIniciandoComI();
 
@@ -125,10 +129,10 @@ public class AnalisadorLexico {
 				readch();
 				i++;
 			}
-			
+			return new Numero(Tag.NUM_REAL, num+decimais);
+		}else{
+			return new Numero(Tag.NUM_INT, num+decimais);
 		}
-		return new Numero(Tag.NUM, num+decimais);
-
 	}
 
 	private Token verificaLimitadores() throws IOException {
@@ -201,6 +205,14 @@ public class AnalisadorLexico {
 		if (ch == '+') {
 			readch();
 			return new Palavra(Tag.MAIS, "+");
+		}
+		if (ch == '[') {
+			readch();
+			return new Palavra(Tag.ABRE_COLCHETE, "[");
+		}
+		if (ch == ']') {
+			readch();
+			return new Palavra(Tag.FECHA_COLCHETE, "]");
 		}
 		if (ch == '-') {
 			readch();
@@ -299,7 +311,22 @@ public class AnalisadorLexico {
 	// Verifica token iniciando com a letra w (write)
 	private Token verificaIniciandoComW() throws IOException {
 		
-		if (verificaProximo('r')) {
+		if (verificaProximo('h')){
+			if (verificaProximo('i')){
+				if (verificaProximo('l')){
+					if (verificaProximo('e')){
+						if (!verificaNumLetra(ch))
+							return insereNaTabelaDeSimbolos(new Palavra(Tag.WHILE, "while"));
+						else
+							return verificaIdentificador("while");
+					}else return verificaIdentificador("whil");
+				}else return verificaIdentificador("whi");
+			}else return verificaIdentificador("wh");
+		}
+		
+		
+		
+		if (ch== 'r') {
 			if (verificaProximo('i')) {
 				if (verificaProximo('t')) {
 					if (verificaProximo('e')) {
@@ -316,6 +343,22 @@ public class AnalisadorLexico {
 
 		} else
 			return verificaIdentificador("w");
+		
+
+	}
+	
+	
+	// Verifica token iniciando com a letra w (write)
+	private Token verificaIniciandoComD() throws IOException {
+		
+		if (verificaProximo('o')) {
+			if (!verificaNumLetra(ch))
+				return insereNaTabelaDeSimbolos(new Palavra(Tag.DO, "do"));
+			else
+				return verificaIdentificador("do");
+		}else{
+			return verificaIdentificador("do");
+		}
 		
 
 	}
@@ -450,7 +493,7 @@ public class AnalisadorLexico {
 	private Token insereNaTabelaDeSimbolos(Palavra t){
 		
 		if (!CompiladorUtils.tabelaDeSimbolos.containsKey(t.getLexema())){ 
-			CompiladorUtils.tabelaDeSimbolos.put(t.getLexema(), t);
+			CompiladorUtils.tabelaDeSimbolos.put(t.getLexema(), new EntradaTabelaSimbolos(t));
 		}
 		return new Palavra(Tag.REGISTRO_SIMBOLOS, t.getLexema());
 	}

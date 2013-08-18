@@ -2,6 +2,8 @@ init
 //Este e um programa com if
 int j, k;
 begin
+do
+begin
 read j;
 read k;
 if (k <> 0) begin 
@@ -11,6 +13,7 @@ else begin
 result := 0;
 end;
 write “Este é o resultado: ”
-WRITE result;
-Write “Fim do programa””
+write result;
+while (result <>0);
+write “Fim do programa”;
 end.

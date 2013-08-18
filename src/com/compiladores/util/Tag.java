@@ -16,6 +16,8 @@ public class Tag {
 	WRITE = 26,
 	NOT = 27,
 	NUM = 28,
+	NUM_INT = 203,
+	NUM_REAL = 204,
 	CHAR = 29,
 	BEGIN = 78,
 	ATRIBUICAO = 79,
@@ -24,6 +26,9 @@ public class Tag {
 	DIFF = 87,
 	REAL = 91,
 	
+	ABRE_COLCHETE = 102,
+	FECHA_COLCHETE = 103,
+	DO=104,
 	PONTO = 82,
 	END = 83,
 	MENOS = 5,  

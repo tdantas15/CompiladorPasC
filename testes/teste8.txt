@@ -1,0 +1,24 @@
+init
+int a, b, c, o, n;
+begin
+   read(b);
+   read(c);
+   if (b>c) begin
+     b :=a;
+     b :=c;
+     b :=o;
+     b :=n;
+    end
+   else begin
+     c :=a;
+     c :=b;
+     c :=o;
+     b :=n;
+     end;
+   write(b);
+   write(a);
+   write(c);
+   write(o);
+   write(n);
+{comentario}
+end.
