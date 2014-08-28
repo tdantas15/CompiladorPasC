@@ -10,8 +10,10 @@ import java.util.logging.Level;
 
 
 
+
 import com.compiladores.analisadores.AnalisadorLexico;
 import com.compiladores.analisadores.Parser;
+import com.compiladores.util.GerenciadorArquivoFonte;
 import com.compiladores.util.LeitorDeArquivos;
 import com.compiladores.util.CompiladorUtils;
 import com.compiladores.util.Palavra;
@@ -68,7 +70,10 @@ public class Compilador {
 
 			Parser parser = new Parser (tokens);
 			parser.parse();
-		
+			//escreve o código fonte gerado no arquivo
+			GerenciadorArquivoFonte.escreveArquivo();
+
+			
 		} catch (IOException e) {
 			CompiladorUtils.LOGGER.log(Level.SEVERE, "Erro de I/O");
 			System.exit(0);

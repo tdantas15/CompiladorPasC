@@ -8,19 +8,18 @@ read(b);
 read(c);
 { Comentario com mais de 
 uma linha }
-if ( (a>b) and (a>c) ) end
-maior := a
+if ( (a>b) && (a>c) ) begin
+maior := a;
 end
 else begin
-if (b>c) then begin
-maior := b
+if (b>c) begin
+maior := b;
 end
 else begin
-maior := c
-end
+maior := c;
 end;
-write (“Resultado
-do programa: ”);
+end;
+write (“Resultado do programa: ”);
 write (maior);
 end
 while (a > 0);

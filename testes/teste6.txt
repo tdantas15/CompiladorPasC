@@ -1,19 +1,20 @@
 init
-//Este e um programa com if
-int j, k;
+{//Este e um programa com IF}
+int j, k, result;
 begin
 do
 begin
-read j;
-read k;
+read( j);
+read (k);
 if (k <> 0) begin 
 result := j/k;
 end
 else begin
 result := 0;
 end;
-write “Este é o resultado: ”
-write result;
-while (result <>0);
-write “Fim do programa”;
+write (“Este é o resultado: ”);
+write (result);
+end
+while (result <> 0);
+write (“Fim do programa”);
 end.

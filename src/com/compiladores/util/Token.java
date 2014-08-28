@@ -4,6 +4,7 @@ public class Token {
 
 	//Tag Correspondente ao Token
 	private final int tag;
+
 	
 	
 	public Token (int tag){
@@ -16,6 +17,8 @@ public class Token {
 	public int getTag(){
 		return tag;
 	}
+	
+
 	
 
 	

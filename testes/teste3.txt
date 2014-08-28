@@ -1,12 +1,11 @@
 init
-int i, j, 1k, _var1, var_2_;
-real j;
+int i, j, k, var1, var2,a;
 begin
-i = 4 * (5-3) * 50 / 10;
+i := 4 * (5-3) * 50 / 10;
 j := i * 10;
 k := i* j / k; 
 k := a + 4;
-write (i) ;
-write (j;
-write k;
+write (i);
+write (j);
+write (k);
 end.

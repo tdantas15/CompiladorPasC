@@ -4,6 +4,7 @@ public class EntradaTabelaSimbolos {
 
 	private Token token;
 	private String tipo="";
+	private int posicaoMemoria;
 	
 	public EntradaTabelaSimbolos(Token token){
 		this.token = token;
@@ -26,6 +27,13 @@ public class EntradaTabelaSimbolos {
 		this.tipo = tipo;
 	}
 	
+	public int getPosicaoMemoria(){
+		return posicaoMemoria;
+	}
+	
+	public void setPosicaoMemoria(int posicaoMemoria){
+		this.posicaoMemoria = posicaoMemoria;
+	}
 	
 	
 	
